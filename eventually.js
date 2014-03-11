@@ -187,7 +187,8 @@
 		}
 
 		return {
-			"EventHandler": EventHandler
+			"EventHandler": EventHandler,
+			"e": new EventHandler()
 		};
 	}
 
