@@ -194,6 +194,8 @@
 
 	if ( typeof define === 'function' && define.amd) {
 		define([], Eventually);
+	} else if( typeof module != 'undefined' ) {
+		module.exports = Eventually();
 	} else {
 		root.Eventually = Eventually();
 	}

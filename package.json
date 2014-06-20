@@ -1,0 +1,25 @@
+{
+  "name": "eventually",
+  "version": "0.0.1",
+  "description": "Simple EventModule that implements simple event binding/trigger and publisher/subscriber message patterns",
+  "main": "eventually.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/boukeversteegh/eventually"
+  },
+  "keywords": [
+    "eventhandling",
+    "pubsub"
+  ],
+  "author": "Bouke Versteegh",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/boukeversteegh/eventually/issues"
+  }
+}
