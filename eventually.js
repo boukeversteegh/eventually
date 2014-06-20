@@ -17,6 +17,9 @@
 			/** @private */
 			this.events = [];
 
+			/** @public */
+			this.separator = '.';
+
 			/**
 			 * Bind to future event
 			 * @param {string} name - Identifies the event, exact matching.
@@ -68,7 +71,6 @@
 
 				// Execute previously published matching events
 				var events = this.getMatchingEvents(topic);
-				//console.log("E", topic, events);
 				for( var j=0; j<events.length; j++ ) {
 					var e = events[j];
 					if( e.match(topic) ) {
@@ -85,7 +87,7 @@
 			 */
 			this.trigger = function(name, _args) {
 				var args = Array.prototype.slice.call(arguments, 1);
-				var e = new Event(name, args);
+				var e = new Event(name, args, this);
 				return this.executeEvent(e);
 			}
 
@@ -95,10 +97,10 @@
 			this.publish = function(name, _args) {
 				var args = Array.prototype.slice.call(arguments, 1);
 
-				var e = new Event(name, args);
-				var parts = name.split('.');
+				var e = new Event(name, args, this);
+				var parts = name.split(this.separator);
 				for( var i=0; i<parts.length; i++ ) {
-					var subname = parts.slice(0,i+1).join('.');
+					var subname = parts.slice(0,i+1).join(this.separator);
 
 					var bindings = this.getBindings(subname);
 					for( var j=0; j<bindings.length; j++ ) {
@@ -144,7 +146,6 @@
 				var matchingevents = this.events.filter(function(e) {
 					return e.match(topic);
 				})
-				// console.log(this.events, topic);
 				return matchingevents;
 			}
 
@@ -153,10 +154,10 @@
 		/**
 		 * @class
 		 */
-		function Event(name, args) {
+		function Event(name, args, eventhandler) {
 			this.name = name;
 			this.args = args;
-
+			this.eventhandler = eventhandler;
 			/**
 			 * Test whether the event matches against a topic.
 			 * Topic 'foo' matches against this event 'foo.bar'.
@@ -164,8 +165,10 @@
 			 * @returns {bool} Whether topic matches event name.
 			 */
 			this.match = function(topic) {
-				var topicparts = topic.split('.');
-				var match = (topic == this.name.split('.', topicparts.length).join('.'));
+				var separator = this.eventhandler.separator;
+				var topicparts = topic.split(separator);
+				var substring = this.name.split(separator, topicparts.length).join(separator);
+				var match = (topic == substring);
 				return match;
 			}
 		}

@@ -53,10 +53,11 @@ describe('EventHandler', function() {
 
 		var results = [];
 
-
 		var event1 = e.publish('user.login', user1);
-		var binding1 = e.subscribe('user.login', writeResult(results));
+		var binding1 = e.subscribe('user', writeResult(results));
 		var event2 = e.publish('user.login', user2);
+
+		expect(e.separator).to.equal('.');
 
 		it("Should execute bound events even if published before subscribing", function() {
 			expect(results.length).to.equal(2);
@@ -65,13 +66,47 @@ describe('EventHandler', function() {
 			expect(results[1].data).to.equal(user2);
 			expect(results[1].this).to.equal(event2);
 		});
-
+		
 		binding1.unbind();
 
 		it("Should no longer execute after unbinding", function() {
 			e.trigger('user.login', user1);
 			expect(results.length).to.equal(2);
 		});
-	})
+	});
+	describe('#subscribe()', function() {
+		var e = new eventually.EventHandler();
+		var results = [];
+		e.subscribe('user', writeResult(results));
+
+		var event = e.publish('user.login', user1);
+
+		it("Should execute bound events with more specific topics", function() {
+			expect(results.length).to.equal(1);
+			expect(results[0].this).to.equal(event);
+		});
+
+	});
+	describe('#separator', function() {
+		var e = new eventually.EventHandler();
+		
+		it("Should be '.' by default", function() {
+			expect(e.separator).to.equal('.');
+		});
+	});
+	describe('#separator', function() {
+		var e = new eventually.EventHandler();
+		var results = [];
+
+		// e.separator = ':';
+		e.publish('user.login');
+		e.subscribe('user', writeResult(results));
+
+		it("Should respect custom separators", function() {
+			expect(results.length).to.equal(1);
+		});
+
+	});
+
 });
 
